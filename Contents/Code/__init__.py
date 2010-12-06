@@ -53,10 +53,15 @@ def ShowBrowse(sender, channel_id, title = None):
 		thumbpath = vid['thumbnailURL']
 		title = vid['label']
 		summary = vid['description']
-		url = vid['videoURL']
+		url = vid['videoURL'].replace('http://wms','rtmp://flash')
+		if url.find('ondemand') == -1:
+		  url = url.replace('scrippsnetworks.com','scrippsnetworks.com/ondemand')
+		url = url.replace('ondemand/','ondemand/&')
+		url = url.replace('.wmv','')
+		url = url.split('&')
 		duration = GetDurationFromString(vid['length'])	
-		dir.Append(WindowsMediaVideoItem(url, title=title,summary=summary, thumb=Function(GetThumb, path = thumbpath), duration=duration))
-	
+		dir.Append(RTMPVideoItem(url[0], clip=url[1], title=title,summary=summary, thumb=Function(GetThumb, path = thumbpath), duration=duration))
+
     return dir
  
 def GetDurationFromString(duration):
